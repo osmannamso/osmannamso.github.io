@@ -18,7 +18,7 @@ secondEl.value = current.second();
 const setUnixTimestamp = (year, month, day, hour, minute, second) => {
     const date = moment();
     date.year(year);
-    date.month(month - 1);
+    date.month(month);
     date.day(day);
     date.hour(hour);
     date.minute(minute);
