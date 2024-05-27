@@ -32,7 +32,7 @@ dateFormEl.addEventListener('submit', (e) => {
     e.preventDefault();
 
     const year = yearEl.value;
-    const month = monthEl.value;
+    const month = monthEl.value - 1;
     const day = dayEl.value;
     const hour = hourEl.value;
     const minute = minuteEl.value;
