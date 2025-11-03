@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kids Learning App</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#4CAF50"/>
+</head>
+<body>
+
+    <header>
+        <h1>Learn with Fun!</h1>
+        <button id="backButton" class="hidden">← Back</button>
+    </header>
+
+    <main>
+        <!-- Screen 1: Category Selection -->
+        <section id="category-screen">
+            <h2>Choose a Category</h2>
+            <div id="category-grid" class="grid-container"></div>
+            <button id="add-category-btn" class="fab">+</button>
+        </section>
+
+        <!-- Screen 2: Item Selection -->
+        <section id="item-screen" class="hidden">
+            <h2 id="item-screen-title"></h2>
+            <div id="item-grid" class="grid-container"></div>
+            <button id="add-item-btn" class="fab">+</button>
+        </section>
+
+        <!-- Modal for adding a new category -->
+        <div id="add-category-modal" class="modal hidden">
+            <div class="modal-content">
+                <h3>Add New Category</h3>
+                <input type="text" id="category-name-input" placeholder="Category Name">
+                <label for="category-image-input">Category Image:</label>
+                <input type="file" id="category-image-input" accept="image/*">
+                <button id="save-category-btn">Save</button>
+                <button class="cancel-btn">Cancel</button>
+            </div>
+        </div>
+
+        <!-- Modal for adding a new item -->
+        <div id="add-item-modal" class="modal hidden">
+            <div class="modal-content">
+                <h3>Add New Item</h3>
+                <input type="text" id="item-name-input" placeholder="Item Name">
+                <label for="item-image-input">Item Image:</label>
+                <input type="file" id="item-image-input" accept="image/*">
+                <div id="recorder-ui">
+                    <p>Record Sound:</p>
+                    <button id="record-btn">Record</button>
+                    <button id="stop-record-btn" disabled>Stop</button>
+                    <audio id="audio-playback" controls></audio>
+                </div>
+                <button id="save-item-btn">Save</button>
+                <button class="cancel-btn">Cancel</button>
+            </div>
+        </div>
+    </main>
+
+    <script src="db.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
