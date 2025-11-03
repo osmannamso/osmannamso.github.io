@@ -83,11 +83,50 @@ function getItemsByCategoryId(categoryId) {
     });
 }
 
+function deleteItem(itemId) {
+    return new Promise((resolve, reject) => {
+        const transaction = db.transaction([ITEMS_STORE], 'readwrite');
+        const store = transaction.objectStore(ITEMS_STORE);
+        const request = store.delete(itemId);
+
+        request.onsuccess = () => resolve();
+        request.onerror = (event) => reject('Error deleting item: ' + event.target.error);
+    });
+}
+
+function deleteCategory(categoryId) {
+    return new Promise((resolve, reject) => {
+        const transaction = db.transaction([CATEGORIES_STORE, ITEMS_STORE], 'readwrite');
+        const categoryStore = transaction.objectStore(CATEGORIES_STORE);
+        const itemStore = transaction.objectStore(ITEMS_STORE);
+
+        // 1. Delete the category itself
+        categoryStore.delete(categoryId);
+
+        // 2. Delete all items associated with this category
+        const itemIndex = itemStore.index('categoryId');
+        const itemRequest = itemIndex.openCursor(IDBKeyRange.only(categoryId));
+
+        itemRequest.onsuccess = (event) => {
+            const cursor = event.target.result;
+            if (cursor) {
+                cursor.delete();
+                cursor.continue();
+            }
+        };
+
+        transaction.oncomplete = () => resolve();
+        transaction.onerror = (event) => reject('Error deleting category and its items: ' + event.target.error);
+    });
+}
+
 // Export the functions to be used in app.js
 window.db = {
     initDB,
     addCategory,
     addItem,
     getCategories,
-    getItemsByCategoryId
+    getItemsByCategoryId,
+    deleteItem,
+    deleteCategory
 };

@@ -65,7 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const categories = await window.db.getCategories();
         categoryGrid.innerHTML = ''; // Clear existing
         categories.forEach(category => {
-            const card = createCard(category.name, category.picture, () => showItemScreen(category.id, category.name));
+            const card = createCard(category, 'category', () => showItemScreen(category.id, category.name));
             categoryGrid.appendChild(card);
         });
     }
@@ -74,26 +74,52 @@ document.addEventListener('DOMContentLoaded', () => {
         const items = await window.db.getItemsByCategoryId(categoryId);
         itemGrid.innerHTML = ''; // Clear existing
         items.forEach(item => {
-            const card = createCard(item.name, item.picture, () => playSound(item.sound));
+            const card = createCard(item, 'item', () => playSound(item.sound));
             itemGrid.appendChild(card);
         });
     }
 
-    function createCard(name, imageBlob, onClick) {
+    function createCard(data, type, onCardClick) {
         const card = document.createElement('div');
         card.className = 'card';
         
         const img = document.createElement('img');
         // Blobs need to be converted to an Object URL to be used in an <img> tag
-        img.src = URL.createObjectURL(imageBlob);
-        img.alt = name;
+        img.src = URL.createObjectURL(data.picture);
+        img.alt = data.name;
         
         const p = document.createElement('p');
-        p.textContent = name;
+        p.textContent = data.name;
+
+        const deleteBtn = document.createElement('button');
+        deleteBtn.className = 'delete-btn';
+        deleteBtn.innerHTML = '&times;'; // 'x' symbol
+        deleteBtn.addEventListener('click', async (e) => {
+            e.stopPropagation(); // Prevent the card's main click event
+
+            const confirmationText = `Are you sure you want to delete the ${type} "${data.name}"?`;
+            if (confirm(confirmationText)) {
+                try {
+                    if (type === 'category') {
+                        await window.db.deleteCategory(data.id);
+                        loadCategories(); // Refresh the category list
+                    } else if (type === 'item') {
+                        await window.db.deleteItem(data.id);
+                        loadItems(currentCategoryId); // Refresh the item list
+                    }
+                } catch (error) {
+                    console.error(`Failed to delete ${type}:`, error);
+                    alert(`Could not delete the ${type}. Please try again.`);
+                }
+            }
+        });
         
         card.appendChild(img);
         card.appendChild(p);
-        card.addEventListener('click', onClick);
+        card.appendChild(deleteBtn);
+
+        // The main click action (navigate or play sound)
+        card.addEventListener('click', onCardClick);
         return card;
     }
 

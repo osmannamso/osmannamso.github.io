@@ -42,6 +42,7 @@ main {
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     cursor: pointer;
     text-align: center;
+    position: relative; /* Needed for positioning the delete button */
     padding: 1rem;
     transition: transform 0.2s;
 }
@@ -60,6 +61,23 @@ main {
 .card p {
     margin: 0.5rem 0 0;
     font-weight: bold;
+}
+
+.card .delete-btn {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 24px;
+    height: 24px;
+    background-color: #ff4444;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    font-weight: bold;
+    line-height: 24px;
+    text-align: center;
+    cursor: pointer;
+    opacity: 0.8;
 }
 
 .fab {
