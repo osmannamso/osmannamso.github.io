@@ -189,15 +189,30 @@ document.addEventListener('DOMContentLoaded', () => {
     async function startMicrophoneAndSetupRecorder() {
         if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
             try {
+                // Find a supported MIME type
+                const mimeTypes = ['audio/mp4', 'audio/webm', 'audio/ogg', 'audio/wav'];
+                let supportedMimeType = '';
+                for (const type of mimeTypes) {
+                    if (MediaRecorder.isTypeSupported(type)) {
+                        supportedMimeType = type;
+                        break;
+                    }
+                }
+
+                if (!supportedMimeType) {
+                    alert('Audio recording is not supported on your browser.');
+                    return;
+                }
+
                 mediaStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                mediaRecorder = new MediaRecorder(mediaStream);
+                mediaRecorder = new MediaRecorder(mediaStream, { mimeType: supportedMimeType });
 
                 mediaRecorder.ondataavailable = (event) => {
                     audioChunks.push(event.data);
                 };
 
                 mediaRecorder.onstop = () => {
-                    recordedAudioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                    recordedAudioBlob = new Blob(audioChunks, { type: supportedMimeType });
                     const audioUrl = URL.createObjectURL(recordedAudioBlob);
                     audioPlayback.src = audioUrl;
                     audioChunks = []; // Reset for next recording
