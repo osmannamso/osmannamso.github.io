@@ -1,7 +1,7 @@
 {
     "name": "Kids Learning App",
     "short_name": "LearnApp",
-    "start_url": "/index.html",
+    "start_url": "/",
     "display": "standalone",
     "background_color": "#f0f8ff",
     "theme_color": "#4CAF50",
